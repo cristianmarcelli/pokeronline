@@ -11,7 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -36,7 +36,7 @@ public class Tavolo {
 	@Column(name = "datecreated")
 	private Date dateCreated;
 
-	@ManyToMany
+	@OneToMany
 	private Set<Utente> giocatori = new HashSet<Utente>(0);
 
 	@OneToOne(fetch = FetchType.LAZY)
