@@ -28,7 +28,6 @@ public class TavoloDTO {
 
 	private Date dateCreated;
 
-	@JsonIgnoreProperties(value = { "tavolo" })
 	private Set<UtenteDTO> giocatori = new HashSet<UtenteDTO>(0);
 
 	@NotNull(message = "{utenteCreazione.notnull}")

@@ -25,7 +25,7 @@ import it.prova.pokeronline.model.Utente;
 import it.prova.pokeronline.service.TavoloService;
 import it.prova.pokeronline.service.UtenteService;
 import it.prova.pokeronline.web.api.exception.IdNotNullForInsertException;
-import it.prova.pokeronline.web.api.exception.TavoloConGiocatoriException;
+import it.prova.pokeronline.web.api.exception.TavoloConGiocatoriAssegnatiException;
 import it.prova.pokeronline.web.api.exception.TavoloNotFoundException;
 
 @RestController
@@ -104,7 +104,7 @@ public class GestioneTavoloController {
 			throw new TavoloNotFoundException("Tavolo not found con id: " + id);
 
 		if (tavoloInstance.getGiocatori() == null || !tavoloInstance.getGiocatori().isEmpty()) {
-			throw new TavoloConGiocatoriException("Impossibile eliminare il tavolo: ha giocatori assegnati");
+			throw new TavoloConGiocatoriAssegnatiException("Impossibile eliminare il tavolo: ha giocatori assegnati");
 		}
 
 		tavoloService.rimuoviPerId(tavoloInstance.getId());

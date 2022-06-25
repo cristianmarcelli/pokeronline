@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import it.prova.pokeronline.model.Tavolo;
+import it.prova.pokeronline.model.Utente;
 import it.prova.pokeronline.repository.tavolo.TavoloRepository;
 
 @Service
@@ -19,10 +20,10 @@ public class TavoloServiceImpl implements TavoloService {
 	public List<Tavolo> listAllElements() {
 		return (List<Tavolo>) repository.findAll();
 	}
-	
+
 	@Override
 	public List<Tavolo> listAllElementsEager() {
-		return (List<Tavolo>)repository.findAllEager();
+		return (List<Tavolo>) repository.findAllEager();
 	}
 
 	@Override
@@ -62,11 +63,16 @@ public class TavoloServiceImpl implements TavoloService {
 	public Tavolo findByDenominazione(String denominazione) {
 		return repository.findByDenominazione(denominazione);
 	}
-	
+
 	@Override
 	@Transactional(readOnly = true)
 	public List<Tavolo> cercaPerUtenteCreazione(Long id) {
 		return repository.findAllByUtenteCreazione_Id(id);
+	}
+
+	@Override
+	public List<Tavolo> caricaTavoliConUtentePresente(Utente utenteInstance) {
+		return repository.findTavoliConUtentePresente(utenteInstance);
 	}
 
 }

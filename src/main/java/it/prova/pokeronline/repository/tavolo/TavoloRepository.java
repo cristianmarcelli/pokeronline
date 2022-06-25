@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import it.prova.pokeronline.model.Tavolo;
+import it.prova.pokeronline.model.Utente;
 
 public interface TavoloRepository extends CrudRepository<Tavolo, Long>, CustomTavoloRepository {
 	
@@ -23,6 +24,9 @@ public interface TavoloRepository extends CrudRepository<Tavolo, Long>, CustomTa
 
 	@EntityGraph(attributePaths = { "giocatori", "utentecreazione" })
 	List<Tavolo> findAllByUtenteCreazione_Id(Long id);
+
+	@Query("from Tavolo t join fetch t.giocatori g where g=?1 ")
+	List<Tavolo> findTavoliConUtentePresente(Utente utenteInstance);
 	
 
 }
