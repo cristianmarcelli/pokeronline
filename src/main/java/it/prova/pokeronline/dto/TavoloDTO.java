@@ -149,8 +149,7 @@ public class TavoloDTO {
 	}
 
 	public Tavolo buildTavoloModel() {
-		return new Tavolo(this.id, this.esperienzaMin, this.cifraMinima, this.denominazione, this.dateCreated,
-				this.utenteCreazione.buildUtenteModel(false));
+		return new Tavolo(this.id, this.esperienzaMin, this.cifraMinima, this.denominazione, this.dateCreated);
 	}
 
 	public static TavoloDTO buildTavoloDTOFromModel(Tavolo tavoloModel, boolean includeGiocatori) {

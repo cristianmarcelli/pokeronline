@@ -62,10 +62,20 @@ public class GestioneTavoloController {
 	}
 
 	// da correggere
-//	@PostMapping("/search")
-//	public List<TavoloDTO> search(@RequestBody TavoloDTO example) {
-//		return TavoloDTO.createTavoloDTOListFromModelList(tavoloService.findByExample(example.buildTavoloModel()), false);
-//	}
+	@PostMapping("/search")
+	public List<TavoloDTO> search(@RequestBody TavoloDTO example) {
+
+		Utente user = utenteService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+
+		if (user.getRuoli().stream().map(ruolo -> ruolo.getCodice()).collect(Collectors.toList())
+				.contains(Ruolo.ROLE_SPECIAL_PLAYER)) {
+			return TavoloDTO.createTavoloDTOListFromModelList(tavoloService.cercaPerUtenteCreazione(user.getId()),
+					true);
+		}
+
+		return TavoloDTO.createTavoloDTOListFromModelList(tavoloService.findByExample(example.buildTavoloModel()),
+				false);
+	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
@@ -76,7 +86,7 @@ public class GestioneTavoloController {
 
 		tavoloInput.setUtenteCreazione(UtenteDTO
 				.buildUtenteDTOFromModel(utenteService.caricaSingoloUtente(tavoloInput.getUtenteCreazione().getId())));
-		
+
 		Tavolo tavoloInserito = tavoloService.inserisciNuovo(tavoloInput.buildTavoloModel());
 		return TavoloDTO.buildTavoloDTOFromModel(tavoloInserito, true);
 	}
