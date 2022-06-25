@@ -30,20 +30,20 @@ public class CustomTavoloRepositoryImpl implements CustomTavoloRepository {
 			paramaterMap.put("denominazione", "%" + example.getDenominazione() + "%");
 		}
 		if (example.getCifraMinima() != null && example.getCifraMinima() > 0) {
-			whereClauses.add(" t.cifraMinima =:cifraMinima ");
+			whereClauses.add(" t.cifraMinima > :cifraMinima ");
 			paramaterMap.put("cifraMinima", example.getCifraMinima());
 		}
 		if (example.getEsperienzaMin() != null && example.getEsperienzaMin() > 0) {
-			whereClauses.add(" t.esperienzaMinima =:esperienzaMinima ");
+			whereClauses.add(" t.esperienzaMinima > :esperienzaMinima ");
 			paramaterMap.put("esperienzaMinima", example.getEsperienzaMin());
 		}
 		if (example.getDateCreated() != null) {
-			whereClauses.add("t.dateCreated >= :dateCreated ");
-			paramaterMap.put("dateCreated", example.getDateCreated());
+			whereClauses.add("t.dateCreated >= :dataCreazione ");
+			paramaterMap.put("dataCreazione", example.getDateCreated());
 		}
 		if (example.getUtenteCreazione() != null && example.getUtenteCreazione().getId() > 0) {
-			whereClauses.add("t.utenteCreazione.id >= :utenteCreazione ");
-			paramaterMap.put("utenteCreazione", example.getUtenteCreazione().getId());
+			whereClauses.add(" t.utenteCreazione.id = :utenteCreazioneId ");
+			paramaterMap.put("utenteCreazioneId",  example.getUtenteCreazione().getId());
 		}
 		
 		queryBuilder.append(!whereClauses.isEmpty()?" and ":"");
