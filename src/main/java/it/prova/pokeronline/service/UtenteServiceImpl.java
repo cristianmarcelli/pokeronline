@@ -60,10 +60,10 @@ public class UtenteServiceImpl implements UtenteService {
 		utenteInstance.setCreditoAccumulato(0);
 		return repository.save(utenteInstance);
 	}
-	
+
 	@Transactional
 	public void rimuovi(Utente utenteInstance) {
-		repository.delete(utenteInstance);
+		utenteInstance.setStato(StatoUtente.DISABILITATO);
 	}
 
 	@Transactional(readOnly = true)

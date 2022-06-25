@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -82,4 +83,16 @@ public class UtenteController {
 		return UtenteDTO.buildUtenteDTOFromModel(utente);
 	}
 
+	//delete Utente
+	@DeleteMapping("/{id}")
+	@ResponseStatus(HttpStatus.OK)
+	public void delete(@PathVariable(required = true) Long id) {
+		Utente utente = utenteService.caricaSingoloUtente(id);
+
+		if (utente == null)
+			throw new UtenteNotFoundException("Utente not found con id: " + id);
+
+		utenteService.rimuovi(utente);
+	}
+	
 }
