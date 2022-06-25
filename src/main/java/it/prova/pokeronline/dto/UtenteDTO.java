@@ -209,13 +209,20 @@ public class UtenteDTO {
 		return result;
 	}
 
+	//list from list
 	public static List<UtenteDTO> buildUtenteDTOListFromModelList(List<Utente> modelList) {
 		return modelList.stream().map(entity -> UtenteDTO.buildUtenteDTOFromModel(entity)).collect(Collectors.toList());
 	}
 
+	//set from set
 	public static Set<UtenteDTO> buildUtenteDTOSetFromModelSet(Set<Utente> modelList) {
 		return (Set<UtenteDTO>) modelList.stream().map(entity -> UtenteDTO.buildUtenteDTOFromModel(entity))
 				.collect(Collectors.toSet());
+	}
+
+	//list from set
+	public static List<UtenteDTO> buildUtenteDTOListFromModelSet(Set<Utente> giocatori) {
+		return giocatori.stream().map(entity -> UtenteDTO.buildUtenteDTOFromModel(entity)).collect(Collectors.toList());
 	}
 
 }

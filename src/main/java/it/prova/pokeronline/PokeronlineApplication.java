@@ -2,6 +2,8 @@ package it.prova.pokeronline;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -74,19 +76,20 @@ public class PokeronlineApplication implements CommandLineRunner {
 			utenteServiceInstance.changeUserAbilitation(ClassicPlayer.getId());
 		}
 		
+		Set<Utente> utentiAlTavolo = new HashSet<Utente>();
+		
+		utentiAlTavolo.add(utenteServiceInstance.findByUsername("user"));
+		utentiAlTavolo.add(utenteServiceInstance.findByUsername("user1"));
+
 		Utente utenteCreazione1 = utenteServiceInstance.findByUsername("admin");
 		String denominazione1 = "H501";
 		Tavolo tavolo1 = tavoloService.findByDenominazione(denominazione1);
 
 		if (tavolo1 == null) {
-			tavolo1 = new Tavolo(0, 0, denominazione1, new SimpleDateFormat("dd/MM/yyyy").parse("18/12/2010"), utenteCreazione1);
+			tavolo1 = new Tavolo(0, 0, denominazione1, new SimpleDateFormat("dd/MM/yyyy").parse("18/12/2010"), utentiAlTavolo,
+					utenteCreazione1);
 			tavoloService.inserisciNuovo(tavolo1);
 		}
-
-//		Film loSqualo = new Film("Lo Squalo", "thriller", new SimpleDateFormat("dd/MM/yyyy").parse("19/12/1975"), 130,
-//				registaSpielberg);
-//		if (filmService.findByTitoloAndGenere(loSqualo.getTitolo(), loSqualo.getGenere()).isEmpty())
-//			filmService.inserisciNuovo(loSqualo);
 
 	}
 

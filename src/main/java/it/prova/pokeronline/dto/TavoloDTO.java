@@ -10,11 +10,9 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
 
 import it.prova.pokeronline.model.Tavolo;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TavoloDTO {
 
 	private Long id;
@@ -142,24 +140,42 @@ public class TavoloDTO {
 		this.giocatori = giocatori;
 	}
 
+	public UtenteDTO getUtenteCreazione() {
+		return utenteCreazione;
+	}
+
+	public void setUtenteCreazione(UtenteDTO utenteCreazione) {
+		this.utenteCreazione = utenteCreazione;
+	}
+
 	public Tavolo buildTavoloModel() {
 		return new Tavolo(this.id, this.esperienzaMin, this.cifraMinima, this.denominazione, this.dateCreated,
 				this.utenteCreazione.buildUtenteModel(false));
 	}
 
 	public static TavoloDTO buildTavoloDTOFromModel(Tavolo tavoloModel, boolean includeGiocatori) {
+
 		TavoloDTO result = new TavoloDTO(tavoloModel.getId(), tavoloModel.getEsperienzaMin(),
 				tavoloModel.getCifraMinima(), tavoloModel.getDenominazione(), tavoloModel.getDateCreated());
-		if (includeGiocatori)
+
+		if (tavoloModel.getUtenteCreazione() != null && tavoloModel.getUtenteCreazione().getId() != null
+				&& tavoloModel.getUtenteCreazione().getId() > 0) {
+			result.setUtenteCreazione(UtenteDTO.buildUtenteDTOFromModel(tavoloModel.getUtenteCreazione()));
+		}
+
+		if (tavoloModel.getGiocatori() != null && !tavoloModel.getGiocatori().isEmpty()) {
 			result.setGiocatori(UtenteDTO.buildUtenteDTOSetFromModelSet(tavoloModel.getGiocatori()));
+		}
+		
 		return result;
 	}
 
 	public static List<TavoloDTO> createTavoloDTOListFromModelList(List<Tavolo> modelListInput,
 			boolean includeGiocatori) {
+
 		return modelListInput.stream().map(tavoloEntity -> {
 			TavoloDTO result = TavoloDTO.buildTavoloDTOFromModel(tavoloEntity, includeGiocatori);
-			
+
 			if (includeGiocatori)
 				result.setGiocatori(UtenteDTO.buildUtenteDTOSetFromModelSet(tavoloEntity.getGiocatori()));
 			return result;
