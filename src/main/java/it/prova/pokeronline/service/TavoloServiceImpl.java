@@ -62,5 +62,11 @@ public class TavoloServiceImpl implements TavoloService {
 	public Tavolo findByDenominazione(String denominazione) {
 		return repository.findByDenominazione(denominazione);
 	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<Tavolo> cercaPerUtenteCreazione(Long id) {
+		return repository.findAllByUtenteCreazione_Id(id);
+	}
 
 }

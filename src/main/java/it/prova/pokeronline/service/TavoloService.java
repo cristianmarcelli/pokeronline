@@ -24,4 +24,6 @@ public interface TavoloService {
 
 	Tavolo findByDenominazione(String denominazione);
 
+	List<Tavolo> cercaPerUtenteCreazione(Long id);
+
 }

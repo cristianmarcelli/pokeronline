@@ -2,6 +2,7 @@ package it.prova.pokeronline.repository.tavolo;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
@@ -19,6 +20,9 @@ public interface TavoloRepository extends CrudRepository<Tavolo, Long>, CustomTa
 	
 	@Query("select distinct t from Tavolo t where t.utenteCreazione = ?1")
 	List<Tavolo> findAllByUtenteCreazione(Long idUtenteCreazione);
+
+	@EntityGraph(attributePaths = { "giocatori", "utentecreazione" })
+	List<Tavolo> findAllByUtenteCreazione_Id(Long id);
 	
 
 }
