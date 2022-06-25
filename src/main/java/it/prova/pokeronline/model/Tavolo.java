@@ -83,6 +83,14 @@ public class Tavolo {
 		this.dateCreated = dateCreated;
 	}
 
+	public Tavolo(Integer esperienzaMin, Integer cifraMinima, String denominazione, Date dateCreated) {
+		super();
+		this.esperienzaMin = esperienzaMin;
+		this.cifraMinima = cifraMinima;
+		this.denominazione = denominazione;
+		this.dateCreated = dateCreated;
+	}
+
 	public Tavolo(Long id, Integer esperienzaMin, Integer cifraMinima, String denominazione, Date dateCreated,
 			Utente utenteCreazione) {
 		super();

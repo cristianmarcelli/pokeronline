@@ -6,11 +6,13 @@ import it.prova.pokeronline.model.Tavolo;
 
 public interface TavoloService {
 	
-	List<Tavolo> listAllElements(boolean eager);
+	List<Tavolo> listAllElements();
+	
+	public List<Tavolo> listAllElementsEager();
 
 	Tavolo caricaSingoloElemento(Long id);
 
-	Tavolo caricaSingoloElementoConutenti(Long id);
+	Tavolo caricaSingoloElementoConUtenti(Long id);
 
 	Tavolo aggiorna(Tavolo tavoloInstance);
 
@@ -20,6 +22,6 @@ public interface TavoloService {
 
 	List<Tavolo> findByExample(Tavolo example);
 
-	List<Tavolo> findByDenominazione(String denominazione);
+	Tavolo findByDenominazione(String denominazione);
 
 }

@@ -1,5 +1,6 @@
 package it.prova.pokeronline;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,17 +9,21 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import it.prova.pokeronline.model.Ruolo;
+import it.prova.pokeronline.model.Tavolo;
 import it.prova.pokeronline.model.Utente;
 import it.prova.pokeronline.service.RuoloService;
+import it.prova.pokeronline.service.TavoloService;
 import it.prova.pokeronline.service.UtenteService;
 
 @SpringBootApplication
 public class PokeronlineApplication implements CommandLineRunner {
-	
+
 	@Autowired
 	private RuoloService ruoloServiceInstance;
 	@Autowired
 	private UtenteService utenteServiceInstance;
+	@Autowired
+	private TavoloService tavoloService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(PokeronlineApplication.class, args);
@@ -26,7 +31,7 @@ public class PokeronlineApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		
+
 		if (ruoloServiceInstance.cercaPerDescrizioneECodice("Administrator", Ruolo.ROLE_ADMIN) == null) {
 			ruoloServiceInstance.inserisciNuovo(new Ruolo("Administrator", Ruolo.ROLE_ADMIN));
 		}
@@ -34,7 +39,7 @@ public class PokeronlineApplication implements CommandLineRunner {
 		if (ruoloServiceInstance.cercaPerDescrizioneECodice("Special Player", Ruolo.ROLE_SPECIAL_PLAYER) == null) {
 			ruoloServiceInstance.inserisciNuovo(new Ruolo("Special Player", Ruolo.ROLE_SPECIAL_PLAYER));
 		}
-		
+
 		if (ruoloServiceInstance.cercaPerDescrizioneECodice("Classic Player", Ruolo.ROLE_PLAYER) == null) {
 			ruoloServiceInstance.inserisciNuovo(new Ruolo("Classic Player", Ruolo.ROLE_PLAYER));
 		}
@@ -52,22 +57,36 @@ public class PokeronlineApplication implements CommandLineRunner {
 		}
 
 		if (utenteServiceInstance.findByUsername("user") == null) {
-			Utente classicUser = new Utente("user", "user", "Antonio", "Verdi", new Date());
-			classicUser.getRuoli()
+			Utente SpecialPlayer = new Utente("user", "user", "Antonio", "Verdi", new Date());
+			SpecialPlayer.getRuoli()
 					.add(ruoloServiceInstance.cercaPerDescrizioneECodice("Special Player", Ruolo.ROLE_SPECIAL_PLAYER));
-			utenteServiceInstance.inserisciNuovo(classicUser);
+			utenteServiceInstance.inserisciNuovo(SpecialPlayer);
 			// l'inserimento avviene come created ma io voglio attivarlo
-			utenteServiceInstance.changeUserAbilitation(classicUser.getId());
+			utenteServiceInstance.changeUserAbilitation(SpecialPlayer.getId());
 		}
 
 		if (utenteServiceInstance.findByUsername("user1") == null) {
-			Utente classicUser1 = new Utente("user1", "user1", "Antonioo", "Verdii", new Date());
-			classicUser1.getRuoli()
+			Utente ClassicPlayer = new Utente("user1", "user1", "Antonioo", "Verdii", new Date());
+			ClassicPlayer.getRuoli()
 					.add(ruoloServiceInstance.cercaPerDescrizioneECodice("Classic Player", Ruolo.ROLE_PLAYER));
-			utenteServiceInstance.inserisciNuovo(classicUser1);
+			utenteServiceInstance.inserisciNuovo(ClassicPlayer);
 			// l'inserimento avviene come created ma io voglio attivarlo
-			utenteServiceInstance.changeUserAbilitation(classicUser1.getId());
+			utenteServiceInstance.changeUserAbilitation(ClassicPlayer.getId());
 		}
+		
+		Utente utenteCreazione1 = utenteServiceInstance.findByUsername("admin");
+		String denominazione1 = "H501";
+		Tavolo tavolo1 = tavoloService.findByDenominazione(denominazione1);
+
+		if (tavolo1 == null) {
+			tavolo1 = new Tavolo(0, 0, denominazione1, new SimpleDateFormat("dd/MM/yyyy").parse("18/12/2010"), utenteCreazione1);
+			tavoloService.inserisciNuovo(tavolo1);
+		}
+
+//		Film loSqualo = new Film("Lo Squalo", "thriller", new SimpleDateFormat("dd/MM/yyyy").parse("19/12/1975"), 130,
+//				registaSpielberg);
+//		if (filmService.findByTitoloAndGenere(loSqualo.getTitolo(), loSqualo.getGenere()).isEmpty())
+//			filmService.inserisciNuovo(loSqualo);
 
 	}
 

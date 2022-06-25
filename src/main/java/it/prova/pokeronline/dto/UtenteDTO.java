@@ -215,7 +215,7 @@ public class UtenteDTO {
 
 	public static Set<UtenteDTO> buildUtenteDTOSetFromModelSet(Set<Utente> modelList) {
 		return (Set<UtenteDTO>) modelList.stream().map(entity -> UtenteDTO.buildUtenteDTOFromModel(entity))
-				.collect(Collectors.toList());
+				.collect(Collectors.toSet());
 	}
 
 }

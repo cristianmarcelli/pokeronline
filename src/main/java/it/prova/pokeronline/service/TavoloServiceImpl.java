@@ -16,8 +16,13 @@ public class TavoloServiceImpl implements TavoloService {
 	private TavoloRepository repository;
 
 	@Override
-	public List<Tavolo> listAllElements(boolean eager) {
+	public List<Tavolo> listAllElements() {
 		return (List<Tavolo>) repository.findAll();
+	}
+	
+	@Override
+	public List<Tavolo> listAllElementsEager() {
+		return (List<Tavolo>)repository.findAllEager();
 	}
 
 	@Override
@@ -26,7 +31,7 @@ public class TavoloServiceImpl implements TavoloService {
 	}
 
 	@Override
-	public Tavolo caricaSingoloElementoConutenti(Long id) {
+	public Tavolo caricaSingoloElementoConUtenti(Long id) {
 		return repository.findByIdEager(id);
 	}
 
@@ -54,7 +59,7 @@ public class TavoloServiceImpl implements TavoloService {
 	}
 
 	@Override
-	public List<Tavolo> findByDenominazione(String denominazione) {
+	public Tavolo findByDenominazione(String denominazione) {
 		return repository.findByDenominazione(denominazione);
 	}
 

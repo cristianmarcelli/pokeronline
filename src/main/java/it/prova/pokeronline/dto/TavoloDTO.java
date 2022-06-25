@@ -155,10 +155,11 @@ public class TavoloDTO {
 		return result;
 	}
 
-	public static List<TavoloDTO> createTavoloDTOSetFromModelSet(List<Tavolo> modelListInput,
+	public static List<TavoloDTO> createTavoloDTOListFromModelList(List<Tavolo> modelListInput,
 			boolean includeGiocatori) {
 		return modelListInput.stream().map(tavoloEntity -> {
 			TavoloDTO result = TavoloDTO.buildTavoloDTOFromModel(tavoloEntity, includeGiocatori);
+			
 			if (includeGiocatori)
 				result.setGiocatori(UtenteDTO.buildUtenteDTOSetFromModelSet(tavoloEntity.getGiocatori()));
 			return result;
