@@ -54,4 +54,14 @@ public class PlayManagementController {
 				true);
 	}
 
+	@GetMapping("/ricerca")
+	public List<TavoloDTO> ricerca() {
+
+		return TavoloDTO.createTavoloDTOListFromModelList(
+				tavoloService.findTavoliEsperienzaMinMaggioreUgualeEsperienzaAccumulata(
+						utenteService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())),
+				true);
+
+	}
+
 }

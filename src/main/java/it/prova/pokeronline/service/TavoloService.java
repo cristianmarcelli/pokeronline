@@ -28,5 +28,7 @@ public interface TavoloService {
 	List<Tavolo> cercaPerUtenteCreazione(Long id);
 
 	List<Tavolo> caricaTavoliConUtentePresente(Utente utenteInstance);
+	
+	List<Tavolo> findTavoliEsperienzaMinMaggioreUgualeEsperienzaAccumulata(Utente utenteInstance);
 
 }

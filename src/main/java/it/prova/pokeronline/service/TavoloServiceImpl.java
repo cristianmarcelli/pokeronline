@@ -75,4 +75,10 @@ public class TavoloServiceImpl implements TavoloService {
 		return repository.findTavoliConUtentePresente(utenteInstance);
 	}
 
+	@Override
+	public List<Tavolo> findTavoliEsperienzaMinMaggioreUgualeEsperienzaAccumulata(Utente utenteInstance) {
+		return repository
+				.findTavoliEsperienzaMinMaggioreUgualeEsperienzaAccumulata(utenteInstance.getEsperienzaAccumulata());
+	}
+
 }
