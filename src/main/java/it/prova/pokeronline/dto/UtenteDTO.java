@@ -2,6 +2,8 @@ package it.prova.pokeronline.dto;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.validation.constraints.Min;
@@ -197,14 +199,23 @@ public class UtenteDTO {
 	// niente password...
 	public static UtenteDTO buildUtenteDTOFromModel(Utente utenteModel) {
 		UtenteDTO result = new UtenteDTO(utenteModel.getId(), utenteModel.getUsername(), utenteModel.getNome(),
-				utenteModel.getCognome(), utenteModel.getDataRegistrazione(), utenteModel.getStato(), utenteModel.getEsperienzaAccumulata(),
-				utenteModel.getCreditoAccumulato());
+				utenteModel.getCognome(), utenteModel.getDataRegistrazione(), utenteModel.getStato(),
+				utenteModel.getEsperienzaAccumulata(), utenteModel.getCreditoAccumulato());
 
 		if (!utenteModel.getRuoli().isEmpty())
 			result.ruoliIds = utenteModel.getRuoli().stream().map(r -> r.getId()).collect(Collectors.toList())
 					.toArray(new Long[] {});
 
 		return result;
+	}
+
+	public static List<UtenteDTO> buildUtenteDTOListFromModelList(List<Utente> modelList) {
+		return modelList.stream().map(entity -> UtenteDTO.buildUtenteDTOFromModel(entity)).collect(Collectors.toList());
+	}
+
+	public static Set<UtenteDTO> buildUtenteDTOSetFromModelSet(Set<Utente> modelList) {
+		return (Set<UtenteDTO>) modelList.stream().map(entity -> UtenteDTO.buildUtenteDTOFromModel(entity))
+				.collect(Collectors.toList());
 	}
 
 }
