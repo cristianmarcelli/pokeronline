@@ -83,7 +83,7 @@ public class UtenteController {
 		return UtenteDTO.buildUtenteDTOFromModel(utente);
 	}
 
-	//delete Utente
+	// delete Utente
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public void delete(@PathVariable(required = true) Long id) {
@@ -94,5 +94,11 @@ public class UtenteController {
 
 		utenteService.rimuovi(utente);
 	}
-	
+
+	// findByExample
+	@PostMapping("/search")
+	public List<UtenteDTO> search(@RequestBody UtenteDTO example) {
+		return UtenteDTO.buildUtenteDTOListFromModelList(utenteService.findByExample(example.buildUtenteModel(true)));
+	}
+
 }

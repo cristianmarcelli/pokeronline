@@ -37,20 +37,24 @@ public class CustomUtenteRepositoryImpl implements CustomUtenteRepository {
 			whereClauses.add(" u.username like :username ");
 			paramaterMap.put("username", "%" + example.getUsername() + "%");
 		}
+		if (example.getStato() != null) {
+			whereClauses.add(" u.stato =:stato ");
+			paramaterMap.put("stato", example.getStato());
+		}
+		if (example.getCreditoAccumulato() != null && example.getCreditoAccumulato() > 0) {
+			whereClauses.add(" u.creditoAccumulato > :creditoAccumulato ");
+			paramaterMap.put("creditoAccumulato", example.getCreditoAccumulato());
+		}
+		if (example.getEsperienzaAccumulata() != null && example.getEsperienzaAccumulata() > 0) {
+			whereClauses.add(" u.esperienzaAccumulata > :esperienzaAccumulata ");
+			paramaterMap.put("esperienzaAccumulata", example.getEsperienzaAccumulata());
+		}
 		if (example.getDataRegistrazione() != null) {
 			whereClauses.add("u.dataRegistrazione >= :dataRegistrazione ");
 			paramaterMap.put("dataRegistrazione", example.getDataRegistrazione());
 		}
-		if (example.getEsperienzaAccumulata() != null && example.getEsperienzaAccumulata() > 0) {
-			whereClauses.add("u.esperienzaAccumulata >= :esperienzaAccumulata ");
-			paramaterMap.put("esperienzaAccumulata", example.getEsperienzaAccumulata());
-		}
-		if (example.getCreditoAccumulato() != null && example.getCreditoAccumulato() > 0) {
-			whereClauses.add("u.creditoAccumulato >= :creditoAccumulato ");
-			paramaterMap.put("creditoAccumulato", example.getCreditoAccumulato());
-		}
-
-		queryBuilder.append(!whereClauses.isEmpty() ? " and " : "");
+		
+		queryBuilder.append(!whereClauses.isEmpty()?" and ":"");
 		queryBuilder.append(StringUtils.join(whereClauses, " and "));
 		TypedQuery<Utente> typedQuery = entityManager.createQuery(queryBuilder.toString(), Utente.class);
 
