@@ -28,4 +28,6 @@ public interface UtenteService {
 
 	public Utente findByUsername(String username);
 
+	public Utente aggiornaCredito(String username, Integer credito);
+
 }

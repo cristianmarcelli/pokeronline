@@ -2,6 +2,7 @@ package it.prova.pokeronline.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -98,6 +99,20 @@ public class UtenteServiceImpl implements UtenteService {
 	@Transactional
 	public Utente findByUsername(String username) {
 		return repository.findByUsername(username).orElse(null);
+	}
+
+	@Override
+	public Utente aggiornaCredito(String username, Integer credito) {
+
+		Utente utenteInstance = repository.findByUsername(username).orElse(null);
+
+		if (utenteInstance == null) {
+			return utenteInstance;
+		}
+
+		utenteInstance.setCreditoAccumulato(credito + utenteInstance.getCreditoAccumulato());
+
+		return utenteInstance;
 	}
 
 }
