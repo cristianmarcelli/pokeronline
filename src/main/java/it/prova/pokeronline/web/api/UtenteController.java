@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import it.prova.pokeronline.model.Utente;
 import it.prova.pokeronline.security.dto.UtenteInfoJWTResponseDTO;
-import it.prova.raccoltafilmspringrest.service.UtenteService;
+import it.prova.pokeronline.service.UtenteService;
 
 @RestController
 @RequestMapping("/api/utente")
