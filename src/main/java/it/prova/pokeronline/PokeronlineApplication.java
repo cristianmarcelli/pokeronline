@@ -114,6 +114,15 @@ public class PokeronlineApplication implements CommandLineRunner {
 					utentiAlTavolo2, utenteCreazione2);
 			tavoloService.inserisciNuovo(tavolo2);
 		}
+		
+		// TAVOLO3##########################################
+		String denominazione3 = "FFFFFF";
+		Tavolo tavolo3 = tavoloService.findByDenominazione(denominazione3);
+
+		if (tavolo3 == null) {
+			tavolo3 = new Tavolo(3L, 5, 10, denominazione3, new SimpleDateFormat("dd/MM/yyyy").parse("18/01/2022"), utenteCreazione2);
+			tavoloService.inserisciNuovo(tavolo3);
+		}
 
 	}
 

@@ -8,6 +8,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +25,7 @@ import it.prova.pokeronline.model.Utente;
 import it.prova.pokeronline.service.TavoloService;
 import it.prova.pokeronline.service.UtenteService;
 import it.prova.pokeronline.web.api.exception.IdNotNullForInsertException;
+import it.prova.pokeronline.web.api.exception.TavoloConGiocatoriException;
 import it.prova.pokeronline.web.api.exception.TavoloNotFoundException;
 
 @RestController
@@ -61,7 +63,7 @@ public class GestioneTavoloController {
 		return TavoloDTO.buildTavoloDTOFromModel(tavoloInstance, true);
 	}
 
-	// da correggere
+	// findByExample
 	@PostMapping("/search")
 	public List<TavoloDTO> search(@RequestBody TavoloDTO example) {
 
@@ -77,6 +79,7 @@ public class GestioneTavoloController {
 				false);
 	}
 
+	// insert
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public TavoloDTO createNew(@Valid @RequestBody TavoloDTO tavoloInput) {
@@ -89,6 +92,22 @@ public class GestioneTavoloController {
 
 		Tavolo tavoloInserito = tavoloService.inserisciNuovo(tavoloInput.buildTavoloModel());
 		return TavoloDTO.buildTavoloDTOFromModel(tavoloInserito, true);
+	}
+
+	// delete
+	@DeleteMapping("/{id}")
+	@ResponseStatus(HttpStatus.OK)
+	public void delete(@PathVariable(required = true) Long id) {
+		Tavolo tavoloInstance = tavoloService.caricaSingoloElementoConUtenti(id);
+
+		if (tavoloInstance == null)
+			throw new TavoloNotFoundException("Tavolo not found con id: " + id);
+
+		if (tavoloInstance.getGiocatori() == null || !tavoloInstance.getGiocatori().isEmpty()) {
+			throw new TavoloConGiocatoriException("Impossibile eliminare il tavolo: ha giocatori assegnati");
+		}
+
+		tavoloService.rimuoviPerId(tavoloInstance.getId());
 	}
 
 }
