@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,7 @@ import it.prova.pokeronline.model.Utente;
 import it.prova.pokeronline.security.dto.UtenteInfoJWTResponseDTO;
 import it.prova.pokeronline.service.UtenteService;
 import it.prova.pokeronline.web.api.exception.IdNotNullForInsertException;
+import it.prova.pokeronline.web.api.exception.UtenteNotFoundException;
 
 @RestController
 @RequestMapping("/api/utente")
@@ -51,14 +53,15 @@ public class UtenteController {
 				utenteLoggato.getUsername(), ruoli));
 	}
 
-	//listAllUtenti
+	// listAllUtenti
 	@GetMapping
 	public List<UtenteDTO> getAll() {
 		// senza DTO qui hibernate dava il problema del N + 1 SELECT
 		// (probabilmente dovuto alle librerie che serializzano in JSON)
 		return UtenteDTO.buildUtenteDTOListFromModelList(utenteService.listAllUtenti());
 	}
-	
+
+	// insert
 	@PostMapping
 	public UtenteDTO createNew(@Valid @RequestBody UtenteDTO utenteInput) {
 		if (utenteInput.getId() != null)
@@ -67,6 +70,16 @@ public class UtenteController {
 		Utente utenteInserito = utenteService.inserisciNuovo(utenteInput.buildUtenteModel(true));
 		return UtenteDTO.buildUtenteDTOFromModel(utenteInserito);
 	}
-	
-	
+
+	// findById
+	@GetMapping("/{id}")
+	public UtenteDTO findById(@PathVariable(value = "id", required = true) long id) {
+		Utente utente = utenteService.caricaSingoloUtente(id);
+
+		if (utente == null)
+			throw new UtenteNotFoundException("Utente not found con id: " + id);
+
+		return UtenteDTO.buildUtenteDTOFromModel(utente);
+	}
+
 }
