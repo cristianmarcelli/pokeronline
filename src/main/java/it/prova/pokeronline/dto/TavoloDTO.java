@@ -166,7 +166,7 @@ public class TavoloDTO {
 		if (tavoloModel.getGiocatori() != null && !tavoloModel.getGiocatori().isEmpty()) {
 			result.setGiocatori(UtenteDTO.buildUtenteDTOSetFromModelSet(tavoloModel.getGiocatori()));
 		}
-		
+
 		return result;
 	}
 

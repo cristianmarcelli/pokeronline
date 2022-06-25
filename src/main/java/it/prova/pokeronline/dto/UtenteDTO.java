@@ -10,6 +10,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import it.prova.pokeronline.model.Ruolo;
@@ -26,8 +27,6 @@ public class UtenteDTO {
 	private String username;
 
 	private String password;
-
-	private String confermaPassword;
 
 	@NotBlank(message = "{nome.notblank}")
 	private String nome;
@@ -92,6 +91,24 @@ public class UtenteDTO {
 		this.creditoAccumulato = creditoAccumulato;
 	}
 
+	public UtenteDTO(Long id,
+			@NotBlank(message = "{username.notblank}") @Size(min = 3, max = 15, message = "Il valore inserito '${validatedValue}' deve essere lungo tra {min} e {max} caratteri") String username,
+			String password, @NotBlank(message = "{nome.notblank}") String nome,
+			@NotBlank(message = "{cognome.notblank}") String cognome, Date dataRegistrazione, StatoUtente stato,
+			@Min(0) Integer esperienzaAccumulata, @Min(0) Integer creditoAccumulato, Long[] ruoliIds) {
+		super();
+		this.id = id;
+		this.username = username;
+		this.password = password;
+		this.nome = nome;
+		this.cognome = cognome;
+		this.dataRegistrazione = dataRegistrazione;
+		this.stato = stato;
+		this.esperienzaAccumulata = esperienzaAccumulata;
+		this.creditoAccumulato = creditoAccumulato;
+		this.ruoliIds = ruoliIds;
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -148,14 +165,6 @@ public class UtenteDTO {
 		this.stato = stato;
 	}
 
-	public String getConfermaPassword() {
-		return confermaPassword;
-	}
-
-	public void setConfermaPassword(String confermaPassword) {
-		this.confermaPassword = confermaPassword;
-	}
-
 	public Long[] getRuoliIds() {
 		return ruoliIds;
 	}
@@ -189,18 +198,19 @@ public class UtenteDTO {
 	}
 
 	public Utente buildUtenteModel(boolean includeIdRoles) {
-		Utente result = new Utente(this.id, this.username, this.password, this.nome, this.cognome);
+		Utente result = new Utente(this.id, this.username, this.password, this.nome, this.cognome,
+				this.dataRegistrazione, this.creditoAccumulato, this.esperienzaAccumulata, this.stato);
 		if (includeIdRoles && ruoliIds != null)
 			result.setRuoli(Arrays.asList(ruoliIds).stream().map(id -> new Ruolo(id)).collect(Collectors.toSet()));
 
 		return result;
 	}
-	
+
 	// niente password...
 	public static UtenteDTO buildUtenteDTOFromModel(Utente utenteModel) {
-		UtenteDTO result = new UtenteDTO(utenteModel.getId(), utenteModel.getUsername(), utenteModel.getNome(),
-				utenteModel.getCognome(), utenteModel.getDataRegistrazione(), utenteModel.getStato(),
-				utenteModel.getEsperienzaAccumulata(), utenteModel.getCreditoAccumulato());
+		UtenteDTO result = new UtenteDTO(utenteModel.getId(), utenteModel.getUsername(), utenteModel.getPassword(),
+				utenteModel.getNome(), utenteModel.getCognome(), utenteModel.getDataRegistrazione(),
+				utenteModel.getStato(), utenteModel.getEsperienzaAccumulata(), utenteModel.getCreditoAccumulato());
 
 		if (!utenteModel.getRuoli().isEmpty())
 			result.ruoliIds = utenteModel.getRuoli().stream().map(r -> r.getId()).collect(Collectors.toList())
@@ -209,18 +219,18 @@ public class UtenteDTO {
 		return result;
 	}
 
-	//list from list
+	// list from list
 	public static List<UtenteDTO> buildUtenteDTOListFromModelList(List<Utente> modelList) {
 		return modelList.stream().map(entity -> UtenteDTO.buildUtenteDTOFromModel(entity)).collect(Collectors.toList());
 	}
 
-	//set from set
+	// set from set
 	public static Set<UtenteDTO> buildUtenteDTOSetFromModelSet(Set<Utente> modelList) {
 		return (Set<UtenteDTO>) modelList.stream().map(entity -> UtenteDTO.buildUtenteDTOFromModel(entity))
 				.collect(Collectors.toSet());
 	}
 
-	//list from set
+	// list from set
 	public static List<UtenteDTO> buildUtenteDTOListFromModelSet(Set<Utente> giocatori) {
 		return giocatori.stream().map(entity -> UtenteDTO.buildUtenteDTOFromModel(entity)).collect(Collectors.toList());
 	}
