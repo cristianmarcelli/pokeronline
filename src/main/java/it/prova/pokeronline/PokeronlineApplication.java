@@ -75,9 +75,18 @@ public class PokeronlineApplication implements CommandLineRunner {
 			// l'inserimento avviene come created ma io voglio attivarlo
 			utenteServiceInstance.changeUserAbilitation(ClassicPlayer.getId());
 		}
-		
+
+		if (utenteServiceInstance.findByUsername("user2") == null) {
+			Utente ClassicPlayer2 = new Utente("user2", "user2", "Saverio", "Carelli", new Date());
+			ClassicPlayer2.getRuoli()
+					.add(ruoloServiceInstance.cercaPerDescrizioneECodice("Classic Player", Ruolo.ROLE_PLAYER));
+			utenteServiceInstance.inserisciNuovo(ClassicPlayer2);
+			// l'inserimento avviene come created ma io voglio attivarlo
+			utenteServiceInstance.changeUserAbilitation(ClassicPlayer2.getId());
+		}
+
+		// TAVOLO1##########################################
 		Set<Utente> utentiAlTavolo = new HashSet<Utente>();
-		
 		utentiAlTavolo.add(utenteServiceInstance.findByUsername("user"));
 		utentiAlTavolo.add(utenteServiceInstance.findByUsername("user1"));
 
@@ -86,9 +95,24 @@ public class PokeronlineApplication implements CommandLineRunner {
 		Tavolo tavolo1 = tavoloService.findByDenominazione(denominazione1);
 
 		if (tavolo1 == null) {
-			tavolo1 = new Tavolo(0, 0, denominazione1, new SimpleDateFormat("dd/MM/yyyy").parse("18/12/2010"), utentiAlTavolo,
-					utenteCreazione1);
+			tavolo1 = new Tavolo(1L, 0, 0, denominazione1, new SimpleDateFormat("dd/MM/yyyy").parse("18/12/2010"),
+					utentiAlTavolo, utenteCreazione1);
 			tavoloService.inserisciNuovo(tavolo1);
+		}
+
+		// TAVOLO2##########################################
+		Set<Utente> utentiAlTavolo2 = new HashSet<Utente>();
+//		utentiAlTavolo2.add(utenteServiceInstance.findByUsername("user1"));
+		utentiAlTavolo2.add(utenteServiceInstance.findByUsername("user2"));
+
+		Utente utenteCreazione2 = utenteServiceInstance.findByUsername("user");
+		String denominazione2 = "KK900";
+		Tavolo tavolo2 = tavoloService.findByDenominazione(denominazione2);
+
+		if (tavolo2 == null) {
+			tavolo2 = new Tavolo(2L, 0, 0, denominazione2, new SimpleDateFormat("dd/MM/yyyy").parse("20/05/2021"),
+					utentiAlTavolo2, utenteCreazione2);
+			tavoloService.inserisciNuovo(tavolo2);
 		}
 
 	}
