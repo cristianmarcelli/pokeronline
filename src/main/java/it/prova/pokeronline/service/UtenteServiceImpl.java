@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import it.prova.pokeronline.model.StatoUtente;
+import it.prova.pokeronline.model.Tavolo;
 import it.prova.pokeronline.model.Utente;
+import it.prova.pokeronline.repository.tavolo.TavoloRepository;
 import it.prova.pokeronline.repository.utente.UtenteRepository;
 
 @Service
@@ -17,6 +19,9 @@ public class UtenteServiceImpl implements UtenteService {
 
 	@Autowired
 	private UtenteRepository repository;
+
+	@Autowired
+	private TavoloRepository tavoloRepository;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -112,6 +117,19 @@ public class UtenteServiceImpl implements UtenteService {
 		utenteInstance.setCreditoAccumulato(credito + utenteInstance.getCreditoAccumulato());
 
 		return utenteInstance;
+	}
+
+	@Override
+	public void abbandonaPartita(Long idTavolo, Utente user) {
+
+		Tavolo tavoloItem = tavoloRepository.findById(idTavolo).orElse(null);
+
+		tavoloItem.getGiocatori().remove(user);
+
+		Integer esperienzaGiocatore = user.getEsperienzaAccumulata();
+
+		user.setEsperienzaAccumulata(esperienzaGiocatore++);
+
 	}
 
 }

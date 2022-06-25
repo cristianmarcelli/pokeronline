@@ -10,10 +10,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import it.prova.pokeronline.dto.TavoloDTO;
+import it.prova.pokeronline.model.Tavolo;
 import it.prova.pokeronline.model.Utente;
 import it.prova.pokeronline.service.TavoloService;
 import it.prova.pokeronline.service.UtenteService;
 import it.prova.pokeronline.web.api.exception.CreditoMinoreDiUnoException;
+import it.prova.pokeronline.web.api.exception.TavoloNotFoundException;
 
 @RestController
 @RequestMapping("/api/playmanagement")
@@ -54,6 +56,7 @@ public class PlayManagementController {
 				true);
 	}
 
+	// ricerca partita con esperienza minima accumulata
 	@GetMapping("/ricerca")
 	public List<TavoloDTO> ricerca() {
 
@@ -61,6 +64,22 @@ public class PlayManagementController {
 				tavoloService.findTavoliEsperienzaMinMaggioreUgualeEsperienzaAccumulata(
 						utenteService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())),
 				true);
+
+	}
+
+	// abbandona partita
+	@GetMapping("/abbandona/{idTavolo}")
+	public void abbandonaPartita(@PathVariable(value = "idTavolo", required = true) Long idTavolo) {
+
+		Utente user = utenteService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+
+		Tavolo tavoloItem = tavoloService.caricaSingoloElemento(idTavolo);
+		
+		if (tavoloItem == null) {
+			throw new TavoloNotFoundException("Tavolo non trovato");
+		}
+
+		utenteService.abbandonaPartita(tavoloItem.getId(), user);
 
 	}
 
