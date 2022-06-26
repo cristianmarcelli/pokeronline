@@ -16,6 +16,8 @@ import it.prova.pokeronline.service.TavoloService;
 import it.prova.pokeronline.service.UtenteService;
 import it.prova.pokeronline.web.api.exception.CreditoMinoreDiUnoException;
 import it.prova.pokeronline.web.api.exception.TavoloNotFoundException;
+import it.prova.pokeronline.web.api.exception.UserCreditLowerThanTableMinCreditException;
+import it.prova.pokeronline.web.api.exception.UserEspLowerThanTableEspException;
 
 @RestController
 @RequestMapping("/api/playmanagement")
@@ -74,12 +76,37 @@ public class PlayManagementController {
 		Utente user = utenteService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
 		Tavolo tavoloItem = tavoloService.caricaSingoloElemento(idTavolo);
-		
+
 		if (tavoloItem == null) {
 			throw new TavoloNotFoundException("Tavolo non trovato");
 		}
 
 		utenteService.abbandonaPartita(tavoloItem.getId(), user);
+
+	}
+
+	// gioca partita
+	@GetMapping("/giocapartita/{idTavolo}")
+	public void giocaPartita(@PathVariable(value = "idTavolo", required = true) Long idTavolo) {
+
+		Utente giocatore = utenteService
+				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+
+		Tavolo tavoloACuiGiocare = tavoloService.caricaSingoloElemento(idTavolo);
+		
+		if (tavoloACuiGiocare == null) {
+			throw new TavoloNotFoundException("Tavolo non trovato");
+		}
+		
+		if (giocatore.getEsperienzaAccumulata() < tavoloACuiGiocare.getEsperienzaMin()) {
+			throw new UserEspLowerThanTableEspException("Impossibile unirsi alla partita: esperienza non sufficiente.");
+		}
+				
+		if (giocatore.getCreditoAccumulato() < tavoloACuiGiocare.getCifraMinima()) {
+			throw new UserCreditLowerThanTableMinCreditException("Impossibile unirsi alla partita: credito non sufficiente.");
+		}
+		
+		utenteService.giocaPartita(idTavolo, giocatore);
 
 	}
 

@@ -31,5 +31,7 @@ public interface UtenteService {
 	public Utente aggiornaCredito(String username, Integer credito);
 
 	public void abbandonaPartita(Long idTavolo, Utente user);
+	
+	void giocaPartita(Long idTavolo, Utente giocatore);
 
 }

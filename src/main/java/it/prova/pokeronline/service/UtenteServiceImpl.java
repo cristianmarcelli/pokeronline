@@ -61,8 +61,6 @@ public class UtenteServiceImpl implements UtenteService {
 		utenteInstance.setStato(StatoUtente.CREATO);
 		utenteInstance.setPassword(passwordEncoder.encode(utenteInstance.getPassword()));
 		utenteInstance.setDataRegistrazione(new Date());
-		utenteInstance.setEsperienzaAccumulata(0);
-		utenteInstance.setCreditoAccumulato(0);
 		return repository.save(utenteInstance);
 	}
 
@@ -129,6 +127,34 @@ public class UtenteServiceImpl implements UtenteService {
 		Integer esperienzaGiocatore = user.getEsperienzaAccumulata();
 
 		user.setEsperienzaAccumulata(esperienzaGiocatore++);
+
+	}
+	
+	@Override
+	public void giocaPartita(Long idTavolo, Utente giocatore) {
+
+		Tavolo tavoloACuiGiocare = tavoloRepository.findById(idTavolo).orElse(null);
+		int creditoGiocatore = giocatore.getCreditoAccumulato();
+
+		double segno = Math.random();
+		boolean risultato = false;
+
+		if (segno > 0.5) {
+			risultato = true;
+		}
+
+		int somma = (int) (Math.random() * 1000);
+		double totale = segno * somma;
+
+		if (risultato == true) {
+			creditoGiocatore += totale;
+		} else {
+			creditoGiocatore -= totale;
+		}
+
+		giocatore.setCreditoAccumulato(creditoGiocatore);
+
+		repository.save(giocatore);
 
 	}
 

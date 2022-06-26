@@ -52,6 +52,8 @@ public class PokeronlineApplication implements CommandLineRunner {
 		// faccio qui perche gia lo fa il service di utente, durante inserisciNuovo
 		if (utenteServiceInstance.findByUsername("admin") == null) {
 			Utente admin = new Utente("admin", "admin", "Mario", "Rossi", new Date());
+			admin.setEsperienzaAccumulata(3);
+			admin.setCreditoAccumulato(3);
 			admin.getRuoli().add(ruoloServiceInstance.cercaPerDescrizioneECodice("Administrator", Ruolo.ROLE_ADMIN));
 			utenteServiceInstance.inserisciNuovo(admin);
 			// l'inserimento avviene come created ma io voglio attivarlo
@@ -59,7 +61,7 @@ public class PokeronlineApplication implements CommandLineRunner {
 		}
 
 		if (utenteServiceInstance.findByUsername("user") == null) {
-			Utente SpecialPlayer = new Utente("user", "user", "Antonio", "Verdi", new Date());
+			Utente SpecialPlayer = new Utente("user", "user", "Antonio", "Verdi", new Date(), 1, 2);
 			SpecialPlayer.getRuoli()
 					.add(ruoloServiceInstance.cercaPerDescrizioneECodice("Special Player", Ruolo.ROLE_SPECIAL_PLAYER));
 			utenteServiceInstance.inserisciNuovo(SpecialPlayer);
@@ -95,7 +97,7 @@ public class PokeronlineApplication implements CommandLineRunner {
 		Tavolo tavolo1 = tavoloService.findByDenominazione(denominazione1);
 
 		if (tavolo1 == null) {
-			tavolo1 = new Tavolo(1L, 0, 0, denominazione1, new SimpleDateFormat("dd/MM/yyyy").parse("18/12/2010"),
+			tavolo1 = new Tavolo(1L, 0, 2, denominazione1, new SimpleDateFormat("dd/MM/yyyy").parse("18/12/2010"),
 					utentiAlTavolo, utenteCreazione1);
 			tavoloService.inserisciNuovo(tavolo1);
 		}
