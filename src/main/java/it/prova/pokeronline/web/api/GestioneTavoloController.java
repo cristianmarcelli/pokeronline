@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -27,6 +28,7 @@ import it.prova.pokeronline.service.UtenteService;
 import it.prova.pokeronline.web.api.exception.IdNotNullForInsertException;
 import it.prova.pokeronline.web.api.exception.TavoloConGiocatoriAssegnatiException;
 import it.prova.pokeronline.web.api.exception.TavoloNotFoundException;
+import it.prova.pokeronline.web.api.exception.UtenteCreazioneNotFoundException;
 
 @RestController
 @RequestMapping("/api/gestionetavolo")
@@ -80,6 +82,20 @@ public class GestioneTavoloController {
 	}
 
 	// insert
+//	@PostMapping
+//	@ResponseStatus(HttpStatus.CREATED)
+//	public TavoloDTO createNew(@Valid @RequestBody TavoloDTO tavoloInput) {
+//
+//		if (tavoloInput.getId() != null)
+//			throw new IdNotNullForInsertException("Non è ammesso fornire un id per la creazione");
+//
+//		tavoloInput.setUtenteCreazione(UtenteDTO
+//				.buildUtenteDTOFromModel(utenteService.caricaSingoloUtente(tavoloInput.getUtenteCreazione().getId())));
+//
+//		Tavolo tavoloInserito = tavoloService.inserisciNuovo(tavoloInput.buildTavoloModel());
+//		return TavoloDTO.buildTavoloDTOFromModel(tavoloInserito, true);
+//	}
+
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public TavoloDTO createNew(@Valid @RequestBody TavoloDTO tavoloInput) {
@@ -87,11 +103,12 @@ public class GestioneTavoloController {
 		if (tavoloInput.getId() != null)
 			throw new IdNotNullForInsertException("Non è ammesso fornire un id per la creazione");
 
-		tavoloInput.setUtenteCreazione(UtenteDTO
-				.buildUtenteDTOFromModel(utenteService.caricaSingoloUtente(tavoloInput.getUtenteCreazione().getId())));
+		Tavolo tavoloDaInserire = tavoloInput.buildTavoloModel();
+		tavoloDaInserire.setUtenteCreazione(
+				utenteService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()));
+		Tavolo tavoloInsert = tavoloService.inserisciNuovo(tavoloDaInserire);
+		return TavoloDTO.buildTavoloDTOFromModel(tavoloInsert, true);
 
-		Tavolo tavoloInserito = tavoloService.inserisciNuovo(tavoloInput.buildTavoloModel());
-		return TavoloDTO.buildTavoloDTOFromModel(tavoloInserito, true);
 	}
 
 	// delete
@@ -108,6 +125,35 @@ public class GestioneTavoloController {
 		}
 
 		tavoloService.rimuoviPerId(tavoloInstance.getId());
+	}
+
+	// update
+	@PutMapping("/{id}")
+	public TavoloDTO update(@Valid @RequestBody TavoloDTO tavoloInput, @PathVariable(required = true) Long id) {
+
+		Tavolo tavolo = tavoloService.caricaSingoloElementoConUtenti(id);
+
+		if (tavolo == null)
+			throw new TavoloNotFoundException("Tavolo not found con id: " + id);
+
+		if (tavolo.getGiocatori() == null || !tavolo.getGiocatori().isEmpty()) {
+			throw new TavoloConGiocatoriAssegnatiException("Impossibile modificare il Tavolo: ha giocatori assegnati.");
+		}
+
+		if (tavoloInput.getUtenteCreazione() == null || tavoloInput.getUtenteCreazione().getId() == null
+				|| tavoloInput.getUtenteCreazione().getId() < 1) {
+			throw new UtenteCreazioneNotFoundException("Utente creazione non trovato.");
+		}
+
+		tavoloInput.setUtenteCreazione(UtenteDTO
+				.buildUtenteDTOFromModel(utenteService.caricaSingoloUtente(tavoloInput.getUtenteCreazione().getId())));
+
+		tavoloInput.setId(id);
+		tavoloInput.setDateCreated(tavolo.getDateCreated());
+		
+		Tavolo tavoloAggiornato = tavoloService.aggiorna(tavoloInput.buildTavoloModel());
+		
+		return TavoloDTO.buildTavoloDTOFromModel(tavoloAggiornato, true);
 	}
 
 }
