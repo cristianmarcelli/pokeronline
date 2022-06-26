@@ -97,7 +97,7 @@ public class PokeronlineApplication implements CommandLineRunner {
 		Tavolo tavolo1 = tavoloService.findByDenominazione(denominazione1);
 
 		if (tavolo1 == null) {
-			tavolo1 = new Tavolo(1L, 0, 2, denominazione1, new SimpleDateFormat("dd/MM/yyyy").parse("18/12/2010"),
+			tavolo1 = new Tavolo(1L, 0, 0, denominazione1, new SimpleDateFormat("dd/MM/yyyy").parse("18/12/2010"),
 					utentiAlTavolo, utenteCreazione1);
 			tavoloService.inserisciNuovo(tavolo1);
 		}
@@ -122,7 +122,7 @@ public class PokeronlineApplication implements CommandLineRunner {
 		Tavolo tavolo3 = tavoloService.findByDenominazione(denominazione3);
 
 		if (tavolo3 == null) {
-			tavolo3 = new Tavolo(3L, 5, 10, denominazione3, new SimpleDateFormat("dd/MM/yyyy").parse("18/01/2022"), utenteCreazione2);
+			tavolo3 = new Tavolo(3L, 0, 0, denominazione3, new SimpleDateFormat("dd/MM/yyyy").parse("18/01/2022"), utenteCreazione2);
 			tavoloService.inserisciNuovo(tavolo3);
 		}
 

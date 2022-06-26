@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import it.prova.pokeronline.model.Tavolo;
 
 public class TavoloDTO {
@@ -29,6 +31,7 @@ public class TavoloDTO {
 	private Set<UtenteDTO> giocatori = new HashSet<UtenteDTO>(0);
 
 	@NotNull(message = "{utenteCreazione.notnull}")
+	@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 	private UtenteDTO utenteCreazione;
 
 	public TavoloDTO() {

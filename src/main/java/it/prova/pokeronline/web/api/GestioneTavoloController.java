@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import it.prova.pokeronline.dto.TavoloDTO;
-import it.prova.pokeronline.dto.UtenteDTO;
 import it.prova.pokeronline.model.Ruolo;
 import it.prova.pokeronline.model.Tavolo;
 import it.prova.pokeronline.model.Utente;
@@ -28,7 +27,6 @@ import it.prova.pokeronline.service.UtenteService;
 import it.prova.pokeronline.web.api.exception.IdNotNullForInsertException;
 import it.prova.pokeronline.web.api.exception.TavoloConGiocatoriAssegnatiException;
 import it.prova.pokeronline.web.api.exception.TavoloNotFoundException;
-import it.prova.pokeronline.web.api.exception.UtenteCreazioneNotFoundException;
 
 @RestController
 @RequestMapping("/api/gestionetavolo")
@@ -120,40 +118,29 @@ public class GestioneTavoloController {
 		if (tavoloInstance == null)
 			throw new TavoloNotFoundException("Tavolo not found con id: " + id);
 
-		if (tavoloInstance.getGiocatori() == null || !tavoloInstance.getGiocatori().isEmpty()) {
-			throw new TavoloConGiocatoriAssegnatiException("Impossibile eliminare il tavolo: ha giocatori assegnati");
-		}
-
 		tavoloService.rimuoviPerId(tavoloInstance.getId());
 	}
 
 	// update
 	@PutMapping("/{id}")
-	public TavoloDTO update(@Valid @RequestBody TavoloDTO tavoloInput, @PathVariable(required = true) Long id) {
+	public TavoloDTO updateTavolo(@Valid @RequestBody TavoloDTO tavoloInput, @PathVariable(required = true) Long id) {
 
 		Tavolo tavolo = tavoloService.caricaSingoloElementoConUtenti(id);
 
-		if (tavolo == null)
-			throw new TavoloNotFoundException("Tavolo not found con id: " + id);
+		if (tavolo.getId() == null)
+			throw new IdNotNullForInsertException("Tavolo non trovato.");
 
 		if (tavolo.getGiocatori() == null || !tavolo.getGiocatori().isEmpty()) {
 			throw new TavoloConGiocatoriAssegnatiException("Impossibile modificare il Tavolo: ha giocatori assegnati.");
 		}
 
-		if (tavoloInput.getUtenteCreazione() == null || tavoloInput.getUtenteCreazione().getId() == null
-				|| tavoloInput.getUtenteCreazione().getId() < 1) {
-			throw new UtenteCreazioneNotFoundException("Utente creazione non trovato.");
-		}
+		Tavolo tavoloUpdate = tavoloInput.buildTavoloModel();
+		tavoloUpdate.setUtenteCreazione(
+				utenteService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()));
 
-		tavoloInput.setUtenteCreazione(UtenteDTO
-				.buildUtenteDTOFromModel(utenteService.caricaSingoloUtente(tavoloInput.getUtenteCreazione().getId())));
-
-		tavoloInput.setId(id);
-		tavoloInput.setDateCreated(tavolo.getDateCreated());
-		
-		Tavolo tavoloAggiornato = tavoloService.aggiorna(tavoloInput.buildTavoloModel());
-		
+		Tavolo tavoloAggiornato = tavoloService.aggiorna(tavoloUpdate);
 		return TavoloDTO.buildTavoloDTOFromModel(tavoloAggiornato, true);
+
 	}
 
 }
